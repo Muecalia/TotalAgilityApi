@@ -24,6 +24,7 @@ builder.Services.AddDbContext<TotalAgilityContext>(options =>
 
 //INJECÇÃO DE DEPENDÊNCIA
 builder.Services.AddScoped<IAgenteRepository, AgenteRepository>();
+builder.Services.AddScoped<INumeroRepository, NumeroRepository>();
 
 
 //builder.Services.AddHostedService<AgenteService>();
