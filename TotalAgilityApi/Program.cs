@@ -26,6 +26,7 @@ builder.Services.AddDbContext<TotalAgilityContext>(options =>
 builder.Services.AddScoped<IAgenteRepository, AgenteRepository>();
 builder.Services.AddScoped<INumeroRepository, NumeroRepository>();
 builder.Services.AddScoped<IProcessoRepository, ProcessoRepository>();
+builder.Services.AddScoped<IProcessoManualRepository, ProcessoManualRepository>();
 
 
 //builder.Services.AddHostedService<AgenteService>();
