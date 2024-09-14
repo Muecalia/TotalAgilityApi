@@ -18,7 +18,7 @@ namespace TotalAgilityApi.Infraestrutura.Context
         public DbSet<NumerosRemovidosResponse> NumerosRemovidos { get; set; }
         public DbSet<NumerosTerminadosResponse> NumerosTerminados { get; set; }
         public DbSet<ProcessosSuspensosResponse> ProcessosSuspensos { get; set; }
-        public DbSet<ProcessosSuspensosCategoriasResponse> ProcessosSuspensosCategorias { get; set; }
+        public DbSet<ProcessosSuspensosCategoriasResponse> EstatisticaProcessosSuspensos { get; set; }
         public DbSet<ProcessosPendentesResponse> ProcessosPendentes { get; set; }
         
         public DbSet<ProcessosSuspensosMsisdnResponse> ProcessosSuspensosMsisdn { get; set; }
