@@ -24,18 +24,18 @@ namespace TotalAgilityApi.Infraestrutura.Context
         public DbSet<ProcessosSuspensosMsisdnResponse> ProcessosSuspensosMsisdn { get; set; }
         public DbSet<ProcessosDuplicadosResponse> ProcessosDuplicados { get; set; }
         public DbSet<ProcessosMais7DiasResponse> ProcessosMais7Dias { get; set; }
-        public DbSet<ProcessosMais7DiasItensResponse> ProcessosMais7DiasItens { get; set; }
-        public DbSet<ProcessosCursoTerminadosResponse> ProcessosCursoTerminados { get; set; }
-        public DbSet<ProcessosValidadosDiaResponse> ProcessosValidadosDia { get; set; }
+        public DbSet<ProcessosManuaisDiaResponse> ProcessosManuaisDia { get; set; }
+        //public DbSet<ProcessosCursoTerminadosResponse> ProcessosCursoTerminados { get; set; }
+        //public DbSet<ProcessosValidadosDiaResponse> ProcessosValidadosDia { get; set; }
         public DbSet<ProcessosRecebidosDiaResponse> ProcessosRecebidosDia { get; set; }
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
         //{
-            //modelBuilder.Entity<TopAgentesValidacaoResponse>(entity =>
-            //{
-            //    entity.HasNoKey(); // Indica que a entidade não possui uma chave primária
-            //    entity.ToView(null); // Indica que não é uma view, é uma stored procedure
-            //});
+        //modelBuilder.Entity<TopAgentesValidacaoResponse>(entity =>
+        //{
+        //    entity.HasNoKey(); // Indica que a entidade não possui uma chave primária
+        //    entity.ToView(null); // Indica que não é uma view, é uma stored procedure
+        //});
         //}
 
     }

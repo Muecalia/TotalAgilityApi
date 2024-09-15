@@ -26,28 +26,10 @@ namespace TotalAgilityApi.Controllers
             return BadRequest(response.Message);
         }
 
-        [HttpGet("processosManuaisCriadosDia")]
-        public async Task<ActionResult<Response<string>>> GetProcessosManuaisCriadosDia(string DataCriacao, CancellationToken cancellationToken)
+        [HttpGet("processosManuaisDia")]
+        public async Task<ActionResult<Response<string>>> GetProcessosManuaisDia(string DataCriacao, CancellationToken cancellationToken)
         {
-            var response = await _iProcessoManualRepository.GetProcessosManuaisCriadosDia(DataCriacao, cancellationToken);
-            if (response.Succeeded)
-                return Ok(response.Message);
-            return BadRequest(response.Message);
-        }
-
-        [HttpGet("processosManuaisTerminadosConcluidosDia")]
-        public async Task<ActionResult<Response<string>>> GetProcessosManuaisTerminadosConcluidosDia(string DataCriacao, CancellationToken cancellationToken)
-        {
-            var response = await _iProcessoManualRepository.GetProcessosManuaisTerminadosConcluidosDia(DataCriacao, cancellationToken);
-            if (response.Succeeded)
-                return Ok(response.Message);
-            return BadRequest(response.Message);
-        }
-
-        [HttpGet("processosManuaisValidadosDia")]
-        public async Task<ActionResult<Response<string>>> GetProcessosManuaisValidadosDia(string DataCriacao, CancellationToken cancellationToken)
-        {
-            var response = await _iProcessoManualRepository.GetProcessosManuaisValidadosDia(DataCriacao, cancellationToken);
+            var response = await _iProcessoManualRepository.GetProcessosManuaisDia(DataCriacao, cancellationToken);
             if (response.Succeeded)
                 return Ok(response.Message);
             return BadRequest(response.Message);

@@ -5,6 +5,7 @@ using TotalAgilityApi.Config;
 using TotalAgilityApi.Infraestrutura.Context;
 using TotalAgilityApi.Infraestrutura.Interfaces;
 using TotalAgilityApi.Infraestrutura.Repositories;
+using TotalAgilityApi.Infraestrutura.Services;
 using TotalAgilityApi.RabbitMq;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,7 +30,11 @@ builder.Services.AddScoped<IProcessoRepository, ProcessoRepository>();
 builder.Services.AddScoped<IProcessoManualRepository, ProcessoManualRepository>();
 
 
-//builder.Services.AddHostedService<AgenteService>();
+//BackgroundService
+builder.Services.AddHostedService<AgenteService>();
+builder.Services.AddHostedService<NumeroService>();
+builder.Services.AddHostedService<ProcessoService>();
+builder.Services.AddHostedService<ProcessoManualService>();
 
 //LOGS
 var logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).Enrich.FromLogContext().CreateLogger();

@@ -19,9 +19,7 @@ namespace TotalAgilityApi.Infraestrutura.Repositories
         private readonly IRabbitMqService _rabbitMqService;
 
         private static readonly Counter RequestActividadeManualCounter = Metrics.CreateCounter("actividade_manual_total", "Requisições das actividades manuais", ["status_code"]);
-        private static readonly Counter RequestProcessoManualCriadoDiaCounter = Metrics.CreateCounter("processo_manual_criado_dia_total", "Requisições de processos manuais criados no dia", ["status_code"]);
-        private static readonly Counter RequestProcessoManualValidadoDiaCounter = Metrics.CreateCounter("processo_manual_validado_dia_total", "Requisições de processos manuais validado no dia", ["status_code"]);
-        private static readonly Counter RequestProcessoManualTermiandoConcluidoDiaCounter = Metrics.CreateCounter("processo_manual_terminado_concluido_dia_total", "Requisições de processos manuais terminados e concluídos no dia", ["status_code"]);
+        private static readonly Counter RequestProcessoManualDiaCounter = Metrics.CreateCounter("processo_manual_dia_total", "Requisições de processos manuais criados, concluídos e terminados no dia", ["status_code"]);
 
 
         public ProcessoManualRepository(TotalAgilityContext context, ILogger<ProcessoManualRepository> logger, IRabbitMqService rabbitMqService)
@@ -84,88 +82,30 @@ namespace TotalAgilityApi.Infraestrutura.Repositories
          * Parametros: DataCriacao
          * Retorno: A lista contendo os dados ou lista vazia
          ************************************************************************************************/
-        public async Task<Response<string>> GetProcessosManuaisCriadosDia(string DataCriacao, CancellationToken cancellationToken)
+        public async Task<Response<string>> GetProcessosManuaisDia(string DataRegisto, CancellationToken cancellationToken)
         {
-            var Entidade = "Processos Manuais criados no dia";
+            var Entidade = "Processos Manuais no dia";
             try
             {
-                string Queue = "ProcessoManualCriadoDiaQueue";
+                string Queue = "ProcessoManualDiaQueue";
                 var DataActual = DateTime.Now;
-                DateTime CreatedDate = Convert.ToDateTime($"{DataCriacao}");
+                DateTime CreatedDate = Convert.ToDateTime($"{DataRegisto}");
 
                 if (CreatedDate.CompareTo(DataActual) > 0)
                     return new Response<string>(MessageError.DataError());
 
-                //var response = await _context.ProcessosRecebidosDia.FromSql($"EXEC [dbo].[sp_GetProcessosManuaisCriadosDia] @DataOperacao={DataCriacao}").ToListAsync(cancellationToken);
-                var response = await _context.ProcessosRecebidosDia.FromSqlInterpolated($"EXEC [dbo].[sp_GetProcessosManuaisCriadosDia] @DataOperacao={DataCriacao}").ToListAsync(cancellationToken);
+                var response = await _context.ProcessosManuaisDia.FromSqlInterpolated($"EXEC [dbo].[sp_GetProcessosManuaisDia] @DataRegisto={CreatedDate}").ToListAsync(cancellationToken);
 
                 if (response.Count > 0)
                     _rabbitMqService.SendMessage(response, Queue);
-                RequestProcessoManualCriadoDiaCounter.Labels(StatusCodes.Status200OK.ToString()).Inc();
+                RequestProcessoManualDiaCounter.Labels(StatusCodes.Status200OK.ToString()).Inc();
                 _logger.LogInformation(MessageError.CarregamentoSucesso(Entidade, response.Count));
                 return new Response<string>(Entidade, MessageError.CarregamentoSucesso(Entidade));
             }
             catch (Exception ex)
             {
                 _logger.LogError(MessageError.BadRequest(Entidade, ex.Message));
-                RequestProcessoManualCriadoDiaCounter.Labels(StatusCodes.Status400BadRequest.ToString()).Inc();
-                return new Response<string>(Entidade);
-            }
-        }
-
-        public async Task<Response<string>> GetProcessosManuaisTerminadosConcluidosDia(string DataCriacao, CancellationToken cancellationToken)
-        {
-            var Entidade = "Processos Manuais termiandos e concluídos no dia";
-            try
-            {
-                string Queue = "ProcessoManualTerminadoConcluidoDiaQueue";
-                var DataActual = DateTime.Now;
-                DateTime CreatedDate = Convert.ToDateTime($"{DataCriacao}");
-
-                if (CreatedDate.CompareTo(DataActual) > 0)
-                    return new Response<string>(MessageError.DataError());
-
-                //var response = await _context.ProcessosRecebidosDia.FromSql($"EXEC [dbo].[sp_GetProcessosManuaisCriadosDia] @DataOperacao={DataCriacao}").ToListAsync(cancellationToken);
-                var response = await _context.ProcessosRecebidosDia.FromSqlInterpolated($"EXEC [dbo].[sp_GetProcessosManuaisTerminadosConcluidosDia] @DataOperacao={DataCriacao}").ToListAsync(cancellationToken);
-
-                if (response.Count > 0)
-                    _rabbitMqService.SendMessage(response, Queue);
-                RequestProcessoManualTermiandoConcluidoDiaCounter.Labels(StatusCodes.Status200OK.ToString()).Inc();
-                _logger.LogInformation(MessageError.CarregamentoSucesso(Entidade, response.Count));
-                return new Response<string>(Entidade, MessageError.CarregamentoSucesso(Entidade));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageError.BadRequest(Entidade, ex.Message));
-                RequestProcessoManualTermiandoConcluidoDiaCounter.Labels(StatusCodes.Status400BadRequest.ToString()).Inc();
-                return new Response<string>(Entidade);
-            }
-        }
-
-        public async Task<Response<string>> GetProcessosManuaisValidadosDia(string DataCriacao, CancellationToken cancellationToken)
-        {
-            var Entidade = "Processos Manuais validados no dia";
-            try
-            {
-                string Queue = "ProcessoManualValidadoDiaQueue";
-                var DataActual = DateTime.Now;
-                DateTime CreatedDate = Convert.ToDateTime($"{DataCriacao}");
-
-                if (CreatedDate.CompareTo(DataActual) > 0)
-                    return new Response<string>(MessageError.DataError());
-
-                var response = await _context.ProcessosRecebidosDia.FromSqlInterpolated($"EXEC [dbo].[sp_GetProcessosManuaisValidadosDia] @DataOperacao={DataCriacao}").ToListAsync(cancellationToken);
-
-                if (response.Count > 0)
-                    _rabbitMqService.SendMessage(response, Queue);
-                RequestProcessoManualValidadoDiaCounter.Labels(StatusCodes.Status200OK.ToString()).Inc();
-                _logger.LogInformation(MessageError.CarregamentoSucesso(Entidade, response.Count));
-                return new Response<string>(Entidade, MessageError.CarregamentoSucesso(Entidade));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageError.BadRequest(Entidade, ex.Message));
-                RequestProcessoManualValidadoDiaCounter.Labels(StatusCodes.Status400BadRequest.ToString()).Inc();
+                RequestProcessoManualDiaCounter.Labels(StatusCodes.Status400BadRequest.ToString()).Inc();
                 return new Response<string>(Entidade);
             }
         }
